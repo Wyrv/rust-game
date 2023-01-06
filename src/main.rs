@@ -31,7 +31,7 @@ fn main() {
     print!("\x1B[2J\x1B[1;1H"); //LIMPA A TELA
 
     println!("\n\n\x1b[92m######################################################## \x1b[0m");
-    println!("\x1b[92mSeja bem vindo ao jogo da focar. Tente acertar a palavra. \x1b[0m");
+    println!("\x1b[92mSeja bem vindo ao jogo da forca. Tente acertar a palavra. \x1b[0m");
     println!("\x1b[92m######################################################## \x1b[0m");
 
     loop{
