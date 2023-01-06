@@ -3,7 +3,6 @@ use rand::Rng;
 
 use std::fs::File;
 use std::io::prelude::*;
-use std::process::Command;
 
 use std::io;
 
@@ -23,6 +22,7 @@ enum GameProgress{
 
 //MAIN INI ===============================================================================
 fn main() {
+    
     let mut turns_left = ALLOWED_ATTEMPTS;
     let selected_word = select_word();
     let mut letters = create_letters(&selected_word);
@@ -40,10 +40,10 @@ fn main() {
         }
         
         if turns_left == 1 {
-            println!("\x1b[91mVoce tem {} turnos restantes.\x1b[0m",turns_left);
+            println!("\x1b[91m\n\nVoce tem {} turnos restantes.\x1b[0m",turns_left);
         }
         else {
-            println!("\x1b[94mVoce tem {} turnos restantes.\x1b[0m",turns_left);
+            println!("\x1b[94m\n\nVoce tem {} turnos restantes.\x1b[0m",turns_left);
         }
         
         display_progress(&letters);
@@ -62,30 +62,36 @@ fn main() {
             if letter.character == user_char{
                 letter.revealed = true;
                 at_least_one_revealed = true;
-                start +=1;
+                start += 1;
             }
         }
         
         //Se ele nao tiver acertado nenhuma, perde uma vez
         if !at_least_one_revealed{
             turns_left -= 1;
-            start +=1;
+            start += 1;
         }
 
         match check_progress(turns_left, &letters){
             GameProgress::InProgress => continue,
             GameProgress::Won => {
-                println!("\x1b[96mParabens, voce venceu! A palavra era {}\x1b[0m", selected_word);
+                print!("\x1B[2J\x1B[1;1H"); //LIMPA A TELA
+                println!("\n\n\x1b[96m####################################################### \x1b[0m");
+                println!("\x1b[96mParabens, voce venceu! A palavra era: {}\x1b[0m", selected_word);
+                println!("\x1b[96m####################################################### \x1b[0m");
                 break;
             }
             GameProgress::Lost => {
-                println!("\x1b[91mSinto muito, voce perdeu! A palavra era {}\x1b[0m", selected_word);
+                print!("\x1B[2J\x1B[1;1H"); //LIMPA A TELA
+                println!("\n\n\x1b[91m####################################################### \x1b[0m");
+                println!("\x1b[91mSinto muito, voce perdeu! A palavra era: {}\x1b[0m", selected_word);
+                println!("\x1b[91m####################################################### \x1b[0m");
                 break;
             }
         }
     }
     
-    println!("\x1b[97mAte mais!\x1b[0m");
+    println!("\x1b[97mAte mais!\n\n\n\x1b[0m");
 }
 
 //MAIN FIM ===============================================================================

@@ -1,1 +1,1 @@
-programador,mouse,carro,monitor,caixa,cadeira,roda,porta,paralelepipedo,doença,sapo,cabrito,garrafa,sapato,balde,computador,isopor,alcool,globo,internet,planeta,escada
+programador,mouse,carro,monitor,caixa,cadeira,roda,porta,paralelepipedo,doença,sapo,cabrito,garrafa,sapato,balde,computador,isopor,alcool,globo,internet,planeta,escada,pedido,caixote,mala,bala,azul,chinelo,desastre,digno,agente,federal,perna,farol,cabelo,pente,capacete,triste,madeira,modesto
