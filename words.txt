@@ -1,1 +1,1 @@
-programador, mouse, carro, monitor, caixa, cadeira, roda, porta, paralelepipedo, doença, sapo, cabrito, garrafa
+programador,mouse,carro,monitor,caixa,cadeira,roda,porta,paralelepipedo,doença,sapo,cabrito,garrafa,sapato,balde,computador,isopor,alcool,globo,internet,planeta,escada
