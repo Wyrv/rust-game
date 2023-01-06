@@ -13,6 +13,12 @@ struct Letter{
     character: char,
     revealed: bool
 }
+
+enum GameProgress{
+    InProgress,
+    Won,
+    Lost
+}
  
 
 //MAIN INI ===============================================================================
@@ -20,14 +26,29 @@ fn main() {
     let mut turns_left = ALLOWED_ATTEMPTS;
     let selected_word = select_word();
     let mut letters = create_letters(&selected_word);
-    
+    let mut start = 0;
+
+    print!("\x1B[2J\x1B[1;1H"); //LIMPA A TELA
+
+    println!("\n\n\x1b[92m######################################################## \x1b[0m");
+    println!("\x1b[92mSeja bem vindo ao jogo da focar. Tente acertar a palavra. \x1b[0m");
+    println!("\x1b[92m######################################################## \x1b[0m");
+
     loop{
-        let mut cmd = Command::new("");
-        cmd.arg("clear");
-        println!("Voce tem {} turnos restantes.",turns_left);
+        if start > 0{
+            print!("\x1B[2J\x1B[1;1H"); //LIMPA A TELA
+        }
+        
+        if turns_left == 1 {
+            println!("\x1b[91mVoce tem {} turnos restantes.\x1b[0m",turns_left);
+        }
+        else {
+            println!("\x1b[94mVoce tem {} turnos restantes.\x1b[0m",turns_left);
+        }
+        
         display_progress(&letters);
         
-        println!("Entre com o palpite da sua letra: ");
+        println!("\nEntre com o palpite da sua letra: ");
         let user_char = read_user_input_character();
 
         //Sair se o usuario digitar um *
@@ -40,18 +61,31 @@ fn main() {
         for letter in letters.iter_mut(){
             if letter.character == user_char{
                 letter.revealed = true;
-                at_least_one_revealed = true
+                at_least_one_revealed = true;
+                start +=1;
             }
         }
         
         //Se ele nao tiver acertado nenhuma, perde uma vez
         if !at_least_one_revealed{
             turns_left -= 1;
+            start +=1;
         }
 
+        match check_progress(turns_left, &letters){
+            GameProgress::InProgress => continue,
+            GameProgress::Won => {
+                println!("\x1b[96mParabens, voce venceu! A palavra era {}\x1b[0m", selected_word);
+                break;
+            }
+            GameProgress::Lost => {
+                println!("\x1b[91mSinto muito, voce perdeu! A palavra era {}\x1b[0m", selected_word);
+                break;
+            }
+        }
     }
     
-    println!("Palavra escolhida foi: {}", selected_word);
+    println!("\x1b[97mAte mais!\x1b[0m");
 }
 
 //MAIN FIM ===============================================================================
@@ -116,4 +150,22 @@ fn read_user_input_character() -> char{
         } 
         Err(_) => {return '*';}
     }
+}
+
+fn check_progress(turns_left: u8, letters: &Vec<Letter>) -> GameProgress {
+    //Checa se todas as letras foram reveladas
+    let mut all_revealed = true;
+    for letter in letters{
+        if !letter.revealed{
+            all_revealed = false;
+        }
+    }
+    if all_revealed {
+        return GameProgress::Won;
+    }
+
+    if turns_left > 0{
+        return GameProgress::InProgress;
+    }
+    return GameProgress::Lost;
 }
