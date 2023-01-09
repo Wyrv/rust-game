@@ -1,10 +1,6 @@
-extern crate rand; // Usando versao mais antiga
-use rand::Rng;
-
-use std::fs::File;
-use std::io::prelude::*;
-
 use std::io;
+
+mod hangman;
 
 const ALLOWED_ATTEMPTS: u8 = 5;
 
@@ -24,7 +20,7 @@ enum GameProgress{
 fn main() {
     
     let mut turns_left = ALLOWED_ATTEMPTS;
-    let selected_word = select_word();
+    let selected_word = hangman::select_word();
     let mut letters = create_letters(&selected_word);
     let mut start = 0;
 
@@ -98,24 +94,7 @@ fn main() {
 
 //MAIN FIM ===============================================================================
 
-//Escolhe a palavra da lista de palavras
-fn select_word() -> String{
-    //Abrir arquivo
-    let mut file = File::open("words.txt").expect("Falha ao abrir o arquivo!");
-
-    //Carregar conteudo do arquivo
-    let mut file_contents = String::new();
-    file.read_to_string(&mut file_contents).expect("Erro ao ler o arquivo.");
-
-    //Separar palavras individualmente em vetor
-    let avaliable_words: Vec<&str> = file_contents.trim().split(',').collect();
-
-    //Gerar index aleatorio
-    let random_index = rand::thread_rng().gen_range(0, avaliable_words.len());
-
-    return String::from(avaliable_words[random_index]);
-}
-
+//===================================================================================
 //Separa a palavras em vetor de caracteres
 fn create_letters(word: &String) -> Vec<Letter>{
     //Cria vetor vazio
@@ -131,6 +110,9 @@ fn create_letters(word: &String) -> Vec<Letter>{
 return letters;
 }
 
+
+
+//===================================================================================
 //Mostra o progresso do jogo
 fn display_progress(letters: &Vec<Letter>){
     let mut display_string = String::from("Progress: ");
@@ -150,6 +132,7 @@ fn display_progress(letters: &Vec<Letter>){
     println!("{}", display_string);
 }
 
+//===================================================================================
 //Le o input do usuario
 fn read_user_input_character() -> char{
     let mut user_input = String::new();
@@ -164,6 +147,7 @@ fn read_user_input_character() -> char{
     }
 }
 
+//===================================================================================
 //Checa o progresso do jogo e informa no caso de progresso, derrota, ou vitoria
 fn check_progress(turns_left: u8, letters: &Vec<Letter>) -> GameProgress {
     //Checa se todas as letras foram reveladas
