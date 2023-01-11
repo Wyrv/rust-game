@@ -1,26 +1,29 @@
-use std::io;
-
+use crate::hangman::select_word::select_word;
+use crate::hangman::print_stage::print_stage;
+use crate::hangman::create_letters::create_letters;
+use crate::hangman::display_progress::display_progress;
+use crate::hangman::read_user_input_character::read_user_input_character;
+use crate::hangman::check_progress::check_progress;
 mod hangman;
 
 const ALLOWED_ATTEMPTS: u8 = 5;
 
-struct Letter{
+pub struct Letter{
     character: char,
     revealed: bool
 }
 
-enum GameProgress{
+pub enum GameProgress{
     InProgress,
     Won,
     Lost
 }
  
 
-//MAIN INI ===============================================================================
 fn main() {
     
     let mut turns_left = ALLOWED_ATTEMPTS;
-    let selected_word = hangman::select_word();
+    let selected_word = select_word();
     let mut letters = create_letters(&selected_word);
     let mut used_letters: Vec<Letter> = Vec::new();
     let mut start = 0;
@@ -94,182 +97,3 @@ fn main() {
     }
     println!("\x1b[97mAte mais!\n\n\n\x1b[0m");
 }
-
-//MAIN FIM ===============================================================================
-
-//===================================================================================
-//Separa a palavras em vetor de caracteres
-fn create_letters(word: &String) -> Vec<Letter>{
-    //Cria vetor vazio
-    let mut letters: Vec<Letter> = Vec::new();
-
-    //Colocar cada caractere na struc
-    for c in word.chars(){
-        letters.push(Letter{
-            character: c,
-            revealed: false
-        });
-    }
-return letters;
-}
-
-
-
-//===================================================================================
-//Mostra o progresso do jogo
-fn display_progress(letters: &Vec<Letter>, used_letters: &Vec<Letter>){
-    let mut display_string = String::from("Progresso: ");
-    let mut char_used = String::from("Letras utilizadas: ");
-
-    //Mostrar charactere apropriado (letra ou '_') pra cada letra
-    for letter in letters{
-        display_string.push(' ');
-
-        if letter.revealed {
-            display_string.push(letter.character);
-        }
-        else {
-            display_string.push('_');
-        }
-        display_string.push(' ');
-    }
-
-    for letter in used_letters{
-        char_used.push(letter.character);
-        char_used.push(' ');
-    }
-
-    println!("{}", display_string);
-    println!("{}", char_used);
-
-
-}
-
-//===================================================================================
-//Le o input do usuario
-fn read_user_input_character(used_letters: &mut Vec<Letter>) -> char{
-
-    let mut user_input = String::new();
-    match io::stdin().read_line(&mut user_input){
-        Ok(_) => {
-            match user_input.chars().next(){
-                Some(c) => {
-                    used_letters.push(Letter{
-                        character: c,
-                        revealed: false
-                    });
-                    return c;
-                }
-                None => {
-                    return '*';
-                }
-            }
-        } 
-        Err(_) => {return '*';}
-    }
-
-
-}
-
-//===================================================================================
-//Checa o progresso do jogo e informa no caso de progresso, derrota, ou vitoria
-fn check_progress(turns_left: u8, letters: &Vec<Letter>) -> GameProgress {
-    //Checa se todas as letras foram reveladas
-    let mut all_revealed = true;
-    for letter in letters{
-        if !letter.revealed{
-            all_revealed = false;
-        }
-    }
-    if all_revealed {
-        return GameProgress::Won;
-    }
-
-    if turns_left > 0{
-        return GameProgress::InProgress;
-    }
-    return GameProgress::Lost;
-}
-
-//===================================================================================
-//IMPRIME NA TELA O STICKMAN
-
-fn print_stage(stage: u8) {
-
-    match stage{
-        0 => {
-            println!("_______ ");
-            println!("|     |");
-            println!("|     ┻ ");
-            println!("|         ");
-            println!("|        ");
-            println!("|         ");
-            println!("|        ");
-            println!("|         ");
-            println!("| ");
-            println!("----------- ");
-        },
-        1 => {
-            println!("_______ ");
-            println!("|     |");
-            println!("|    _┻_");
-            println!("|   (._.) ");
-            println!("|        ");
-            println!("|         ");
-            println!("|        ");
-            println!("|         ");
-            println!("| ");
-            println!("----------- ");
-        },
-        2 => {
-            println!("_______ ");
-            println!("|     |");
-            println!("|    _┻_");
-            println!("|   (._.) ");
-            println!("|    /|  ");
-            println!("|   / |   ");
-            println!("|        ");
-            println!("|         ");
-            println!("| ");
-            println!("----------- ");
-        },
-        3 => {
-            println!("_______ ");
-            println!("|     |");
-            println!("|    _┻_");
-            println!("|   (._.) ");
-            println!("|    /|\\ ");
-            println!("|   / | \\ ");
-            println!("|        ");
-            println!("|         ");
-            println!("| ");
-            println!("----------- ");
-        },
-        4 => {
-            println!("_______ ");
-            println!("|     |");
-            println!("|    _┻_");
-            println!("|   (._.) ");
-            println!("|    /|\\ ");
-            println!("|   / | \\ ");
-            println!("|    /   ");
-            println!("|   /     ");
-            println!("| ");
-            println!("----------- ");
-        },
-        5 => {
-            println!("_______ ");
-            println!("|     |");
-            println!("|    _┻_");
-            println!("|   (._.) ");
-            println!("|    /|\\ ");
-            println!("|   / | \\ ");
-            println!("|    / \\ ");
-            println!("|   /   \\ ");
-            println!("| ");
-            println!("----------- ");
-        },
-        _ => println!("\x1b[91mE morreu!\x1b[0m")
-    }
-}
-
