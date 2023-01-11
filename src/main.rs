@@ -22,6 +22,7 @@ fn main() {
     let mut turns_left = ALLOWED_ATTEMPTS;
     let selected_word = hangman::select_word();
     let mut letters = create_letters(&selected_word);
+    let mut used_letters: Vec<Letter> = Vec::new();
     let mut start = 0;
 
     print!("\x1B[2J\x1B[1;1H"); //LIMPA A TELA
@@ -43,12 +44,13 @@ fn main() {
         }
         
         //Mostra progresso EX: _ _ _ _ _
-        display_progress(&letters);
+        display_progress(&letters,&used_letters);
+        print_stage(ALLOWED_ATTEMPTS - turns_left);
         
         println!("\nEntre com o palpite da sua letra: ");
 
         //Le o INPUT do usuario
-        let user_char = read_user_input_character();
+        let user_char = read_user_input_character(&mut used_letters);
 
         //Sair se o usuario digitar um *
         if user_char == '*'{
@@ -85,6 +87,7 @@ fn main() {
                 println!("\n\n\x1b[91m####################################################### \x1b[0m");
                 println!("\x1b[91mSinto muito, voce perdeu! A palavra era: {}\x1b[0m", selected_word);
                 println!("\x1b[91m####################################################### \x1b[0m");
+                print_stage(ALLOWED_ATTEMPTS - turns_left);
                 break;
             }
         }
@@ -114,8 +117,9 @@ return letters;
 
 //===================================================================================
 //Mostra o progresso do jogo
-fn display_progress(letters: &Vec<Letter>){
-    let mut display_string = String::from("Progress: ");
+fn display_progress(letters: &Vec<Letter>, used_letters: &Vec<Letter>){
+    let mut display_string = String::from("Progresso: ");
+    let mut char_used = String::from("Letras utilizadas: ");
 
     //Mostrar charactere apropriado (letra ou '_') pra cada letra
     for letter in letters{
@@ -129,22 +133,42 @@ fn display_progress(letters: &Vec<Letter>){
         }
         display_string.push(' ');
     }
+
+    for letter in used_letters{
+        char_used.push(letter.character);
+        char_used.push(' ');
+    }
+
     println!("{}", display_string);
+    println!("{}", char_used);
+
+
 }
 
 //===================================================================================
 //Le o input do usuario
-fn read_user_input_character() -> char{
+fn read_user_input_character(used_letters: &mut Vec<Letter>) -> char{
+
     let mut user_input = String::new();
     match io::stdin().read_line(&mut user_input){
         Ok(_) => {
             match user_input.chars().next(){
-                Some(c) => {return c;}
-                None => {return '*';}
+                Some(c) => {
+                    used_letters.push(Letter{
+                        character: c,
+                        revealed: false
+                    });
+                    return c;
+                }
+                None => {
+                    return '*';
+                }
             }
         } 
         Err(_) => {return '*';}
     }
+
+
 }
 
 //===================================================================================
@@ -166,3 +190,86 @@ fn check_progress(turns_left: u8, letters: &Vec<Letter>) -> GameProgress {
     }
     return GameProgress::Lost;
 }
+
+//===================================================================================
+//IMPRIME NA TELA O STICKMAN
+
+fn print_stage(stage: u8) {
+
+    match stage{
+        0 => {
+            println!("_______ ");
+            println!("|     |");
+            println!("|     ┻ ");
+            println!("|         ");
+            println!("|        ");
+            println!("|         ");
+            println!("|        ");
+            println!("|         ");
+            println!("| ");
+            println!("----------- ");
+        },
+        1 => {
+            println!("_______ ");
+            println!("|     |");
+            println!("|    _┻_");
+            println!("|   (._.) ");
+            println!("|        ");
+            println!("|         ");
+            println!("|        ");
+            println!("|         ");
+            println!("| ");
+            println!("----------- ");
+        },
+        2 => {
+            println!("_______ ");
+            println!("|     |");
+            println!("|    _┻_");
+            println!("|   (._.) ");
+            println!("|    /|  ");
+            println!("|   / |   ");
+            println!("|        ");
+            println!("|         ");
+            println!("| ");
+            println!("----------- ");
+        },
+        3 => {
+            println!("_______ ");
+            println!("|     |");
+            println!("|    _┻_");
+            println!("|   (._.) ");
+            println!("|    /|\\ ");
+            println!("|   / | \\ ");
+            println!("|        ");
+            println!("|         ");
+            println!("| ");
+            println!("----------- ");
+        },
+        4 => {
+            println!("_______ ");
+            println!("|     |");
+            println!("|    _┻_");
+            println!("|   (._.) ");
+            println!("|    /|\\ ");
+            println!("|   / | \\ ");
+            println!("|    /   ");
+            println!("|   /     ");
+            println!("| ");
+            println!("----------- ");
+        },
+        5 => {
+            println!("_______ ");
+            println!("|     |");
+            println!("|    _┻_");
+            println!("|   (._.) ");
+            println!("|    /|\\ ");
+            println!("|   / | \\ ");
+            println!("|    / \\ ");
+            println!("|   /   \\ ");
+            println!("| ");
+            println!("----------- ");
+        },
+        _ => println!("\x1b[91mE morreu!\x1b[0m")
+    }
+}
+
