@@ -4,20 +4,11 @@ use crate::hangman::create_letters::create_letters;
 use crate::hangman::display_progress::display_progress;
 use crate::hangman::read_user_input_character::read_user_input_character;
 use crate::hangman::check_progress::check_progress;
+use crate::hangman::others::Letter;
+use crate::hangman::others::GameProgress;
 mod hangman;
 
 const ALLOWED_ATTEMPTS: u8 = 5;
-
-pub struct Letter{
-    character: char,
-    revealed: bool
-}
-
-pub enum GameProgress{
-    InProgress,
-    Won,
-    Lost
-}
  
 
 fn main() {
