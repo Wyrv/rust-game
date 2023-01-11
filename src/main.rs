@@ -43,7 +43,7 @@ fn main() {
             println!("\x1b[94m\n\nVoce tem {} turnos restantes.\x1b[0m",turns_left);
         }
         
-        //Mostra progresso EX: _ _ _ _ _
+        //Mostra figura e progresso EX: _ _ _ _ _
         display_progress(&letters,&used_letters);
         print_stage(ALLOWED_ATTEMPTS - turns_left);
         
